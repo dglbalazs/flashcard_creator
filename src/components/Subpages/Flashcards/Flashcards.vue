@@ -7,7 +7,7 @@
             <Flashcard 
                 class
                 :key="flashcard.id"
-                v-for="flashcard in flashcards"
+                v-for="flashcard in filtered_flashcards"
                 :flashcard = "flashcard"
             
             ></Flashcard>
@@ -25,21 +25,20 @@ export default {
     props: {
         flashcards_name: String,
         collections: Array,
-        collection_selected: Number,
-    },
-    data() {
-        return {
-            flashcards: Array,
-        }
+        flashcards: Array,
+        collection_selected: String,
     },
     created() {
         this.fill_flashcards()
     },
+    data() {
+        return {
+            filtered_flashcards : Array
+        }
+    },
     watch: {
-        collections:  function(newVal,oldVal) {
-            if (newVal!=oldVal) {
-                this.fill_flashcards();
-            }
+        flashcards:  function() {
+            this.fill_flashcards();
         }
     },
     methods: {
@@ -48,7 +47,7 @@ export default {
             this.$emit('back-to-collections',true)
         },
         fill_flashcards() {
-            this.flashcards = this.collections.filter((collection)=> collection.id==this.collection_selected)[0].innerCard
+            this.filtered_flashcards = this.flashcards.filter((flashcard)=> flashcard.parentId == this.collection_selected)
         }
     }
 }

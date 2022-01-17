@@ -1,0 +1,64 @@
+{
+  "collections": [
+    {
+      "id": "1",
+      "name": "Example 1"
+    },
+    {
+      "id": "3",
+      "name": "Example 3"
+    },
+    {
+      "id": "4",
+      "name": "Example 4"
+    },
+    {
+      "name": "123",
+      "id": "sb3w52T"
+    }
+  ],
+  "flashcards": [
+    {
+      "id": "1",
+      "description": "Example description 1",
+      "solution": "Example solution 1",
+      "parentId": "1"
+    },
+    {
+      "id": "2",
+      "description": "Example description 2",
+      "solution": "Example solution 2",
+      "parentId": "1"
+    },
+    {
+      "id": "3",
+      "description": "Example description 3",
+      "solution": "Example solution 3",
+      "parentId": "2"
+    },
+    {
+      "id": "4",
+      "description": "Example description 4",
+      "solution": "Example solution 4",
+      "parentId": "2"
+    },
+    {
+      "description": "1233",
+      "solution": "333",
+      "parentId": "2",
+      "id": "46SNWzE"
+    },
+    {
+      "description": "123123",
+      "solution": "1233231",
+      "parentId": "2",
+      "id": "7Q3bxvl"
+    },
+    {
+      "description": "123",
+      "solution": "222",
+      "parentId": "4",
+      "id": "r5DZzqr"
+    }
+  ]
+}

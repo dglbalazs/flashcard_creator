@@ -37,7 +37,7 @@ export default {
         }
     },
     mounted(){
-        this.number_of_flashcard = this.collection.innerCard.length
+        //this.number_of_flashcard = this.collection.innerCard.length
     }
 }
 </script>

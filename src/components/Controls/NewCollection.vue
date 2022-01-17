@@ -29,10 +29,7 @@ export default {
             }
 
             const new_Collection = {
-                id: 5,
-                name: this.name,
-                innerCard: []
-
+                name: this.name
             }
 
             this.$emit('add-new-collection',new_Collection);

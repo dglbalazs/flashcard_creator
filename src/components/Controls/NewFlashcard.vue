@@ -24,6 +24,9 @@ export default {
             solution: ''
         }
     },
+    props: {
+        collection_selected : String
+    },
     methods : {
         send_form(e) {
             e.preventDefault()
@@ -34,9 +37,9 @@ export default {
             }
 
             const new_Flashcard = {
-                id: 5,
                 description: this.description,
-                solution: this.solution
+                solution: this.solution,
+                parentId: this.collection_selected
             }
 
             this.$emit('add-new-flashcard',new_Flashcard);

@@ -13,10 +13,11 @@ export default {
     components: {
         Button
     },
+    emits: ['add-new'],
     methods: {
         toggle_add_new() {
             console.log('opening add new window')
-            this.$emit('add-new');
+            this.$emit('add-new',true);
         }
     }
 }

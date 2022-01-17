@@ -24,7 +24,8 @@ export default {
     name: 'Collections',
     emits: ['chosen-id','delete-collection'],
     props: {
-        collections: Array
+        collections: Array,
+        flashcards: Array,
     }
 }
 </script>

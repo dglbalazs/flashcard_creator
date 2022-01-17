@@ -1,6 +1,20 @@
 <template>
-  <Window class='window' :add_new="add_new_activation" @remove-add-new='remove_add_new()'></Window>
-  <Controls class='controls' @add-new='add_new()'></Controls>
+
+  <Window 
+  
+    class='window' 
+    :trigger_popup="trigger_popup" 
+    @remove-add-new='remove_add_new()'
+  
+  ></Window>
+  
+  <Controls 
+  
+    class='controls' 
+    @add-new='add_new()'
+  
+  ></Controls>
+
 </template>
 
 <script>
@@ -13,26 +27,26 @@ export default {
     Window,
     Controls
   },
+  data() {
+    return {
+      trigger_popup : Boolean
+    }
+  },
   methods: {
     add_new() {
       console.log('akarmi')
-      this.add_new_activation = true;
+      this.trigger_popup = true;
+      console.log(this.trigger_popup)
     },
     remove_add_new() {
-      this.add_new_activation = false;
+      this.trigger_popup = false;
     }
   },
   created() {
     document.title = 'Flashcard Cucc';
+    this.trigger_popup = false;
   },
-  mounted() {
-    this.add_new_activation = false;
-  },
-  data() {
-    return {
-      add_new_activation : Boolean
-    }
-  }
+
 }
 </script>
 

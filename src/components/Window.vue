@@ -6,11 +6,13 @@
             @delete-collection="delete_collection"
             v-if="this.collection_flashcard=='collection'"
             :collections = 'collections'
+            :flashcards = 'flashcards'
         
         ></Collections>
         
         <Flashcards 
             :collections = 'collections'
+            :flashcards = 'flashcards'
             :collection_selected = 'collection_selected'
             :flashcards_name = 'flashcards_name'
             @back-to-collections='back_to_collections'
@@ -20,7 +22,7 @@
         
         <NewCollection 
         
-            v-if='new_collection && this.collection_flashcard=="collection"' 
+            v-if='trigger_popup==true && this.collection_flashcard=="collection"' 
             class='popup-window' 
             @remove-add-new="$emit('remove-add-new')"
             @add-new-collection="add_new_collection"
@@ -29,8 +31,9 @@
 
         <NewFlashcard 
         
-            v-if='new_collection && this.collection_flashcard=="flashcard"' 
-            class='popup-window' 
+            v-if='trigger_popup==true && this.collection_flashcard=="flashcard"' 
+            class='popup-window'
+            :collection_selected = 'collection_selected'
             @remove-add-new="$emit('remove-add-new')"
             @add-new-flashcard="add_new_flashcard"
 
@@ -52,76 +55,113 @@ export default {
     data() {
         return {
             collection_flashcard : String,
-            collection_selected : Number,
-            new_collection: Boolean,
+            collection_selected : String,
             collections: Array,
             flashcards: Array,
             flashcards_name: String,
         }
     },
     props: {
-        add_new : Boolean
+        trigger_popup : Boolean
     },
-    created() {
+    emits: ['remove-add-new'],
+    mounted() {
         this.collection_flashcard = 'collection';
-        this.collection_selected = 0;
-        this.new_collection = false;
-        this.collections = [
-            {
-                id : 1,
-                name: 'Example1',
-                innerCard: [
-                    {
-                        id: 1,
-                        description: 'Example description',
-                        solution: 'Example solution'
-                    }
-                ]
-            },
-            {
-                id : 2,
-                name: 'Example2',
-                innerCard: [
-                    {
-                        id: 1,
-                        description: 'Example description',
-                        solution: 'Example solution'
-                    }
-                ]
-            },
-            {
-                id : 3,
-                name: 'Example3',
-                innerCard: [
-                    {
-                        id: 1,
-                        description: 'Example description',
-                        solution: 'Example solution'
-                    },
-                    {
-                        id: 2,
-                        description: 'Example description',
-                        solution: 'Example solution'
-                    }                    
-                ]
-            }
-        ]
+        this.collection_selected = '';
+        alert('created ' + this.trigger_popup + ' , ' + this.collection_flashcard)
     },
-    watch: {
-        add_new: function(newVal) {
-            if (newVal==true) {
-                this.new_collection = true;
-            } else {
-                this.new_collection = false;
-            }
-        }
+    async created() {
+        this.collections = await this.fetchCollections()
+        this.flashcards = await this.fetchFlashcards()
     },
     methods: {
+
+        async fetchCollections() {
+            const res = await fetch ('api/collections')
+
+            const data = await res.json()
+
+            return data
+        },
+        async fetchCollection(id) {
+            const res = await fetch (`api/collections/${id}`)
+
+            const data = await res.json()
+
+            return data
+        },
+
+        async fetchFlashcards() {
+            const res = await fetch ('api/flashcards')
+
+            const data = await res.json()
+
+            return data
+        },
+
+        async add_new_collection(new_collection) {
+            console.log('Adding new collection with name : ' + new_collection.name)
+            const res = await fetch('api/collections', {
+                method: 'POST',
+                headers: {
+                    'Content-type' : 'application/json',
+                },
+                body: JSON.stringify(new_collection)
+            })
+
+            const data = await res.json()
+
+            this.collections = [...this.collections,data]
+        },
+
+        async add_new_flashcard(new_flashcard) {
+            console.log('Adding new flashcard to collection with id ' + this.collection_selected)
+            const res = await fetch('api/flashcards', {
+                method: 'POST',
+                headers: {
+                    'Content-type' : 'application/json',
+                },
+                body: JSON.stringify(new_flashcard)            
+            })
+
+            const data = await res.json()
+
+            this.flashcards = [...this.flashcards,data]
+            
+        },
+
+        async delete_collection(id) {
+            if (confirm('Biztos, hogy törölni szeretnéd?')) {
+                console.log('Deleting ' + id)
+                const res = await fetch(`api/collections/${id}`, {
+                    method: 'DELETE'
+                })
+
+                res.status == 200 ?  this.collections = this.collections.filter((collection) => collection.id !== id) : alert('Hiba a törlés közben.')
+            }
+        },
+
+        async delete_flashcards(parentId) {
+            console.log('Deleting flashcards with parentId' + parentId)
+            this.flashcards = await this.fetchFlashcards()
+
+            let int_parentId = parentId.parseInt()
+            alert(`api/flashcards?parentId=${int_parentId}`)
+            const res = await fetch(`api/flashcards?parentId=${int_parentId}`, {
+                method: 'DELETE'
+            })
+
+            if (res.status != 200) {
+                console.log('Error while deleting flashcards.')
+            }
+            
+            this.flashcards = await this.fetchFlashcards()
+        },
+
         chosen_collection(id) {
             console.log('Opening id ' + (id) + 'collection.')
             this.flashcards_name = this.collections.filter((collection) => collection.id==id)[0].name
-            this.new_collection = false;
-            this.$emit('add-new-remove');
+            this.$emit('remove-add-new');
             this.collection_flashcard = 'flashcard'
             this.collection_selected = id
         },
@@ -130,24 +170,9 @@ export default {
             console.log('Back to collections.')
             this.flashcards_name = ''
             this.collection_flashcard = 'collection'
-            this.collection_selected = 0;
+            this.$emit('remove-add-new');
+            this.collection_selected = '';
         },
-
-        add_new_collection(new_collection) {
-            console.log('Adding new collection with name : ' + new_collection.name)
-            this.collections = [...this.collections, new_collection]
-        },
-
-        add_new_flashcard(new_flashcard) {
-            console.log('Adding new flashcard to collection with id ' + this.collection_selected)
-            this.collections.filter((collection)=>collection.id==this.collection_selected)[0].innerCard = [...this.collections.filter((collection)=>collection.id==this.collection_selected)[0].innerCard,new_flashcard]
-        },
-        delete_collection(id) {
-            if (confirm('Biztos, hogy törölni szeretnéd?')) {
-                console.log('Deleting ' + id)
-                this.collections = this.collections.filter((collection) => collection.id !== id)   
-            }
-        }
     }
 }
 </script>
