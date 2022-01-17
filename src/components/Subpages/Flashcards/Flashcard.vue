@@ -9,6 +9,11 @@
 
             </div>
         </div>
+        <div class="flashcard-card-buttons" @click='delete_flashcard()'>
+            <div class="flashcard-card-delete">
+                Törlés
+            </div>
+        </div>
     </div>
 
 </template>
@@ -30,6 +35,11 @@ export default {
     methods: {
         onClick() {
             this.clicked = !this.clicked;
+        },
+
+        delete_flashcard() {
+            console.log('deleting flashcard with id ' + this.flashcard.id)
+            this.$emit('delete-flashcard',this.flashcard.id)
         }
     }
 }
@@ -37,11 +47,14 @@ export default {
 
 <style scoped>
 
+.flashcard {
+    margin: 10px;
+}
+
 .flashcard-wrapper {
     position: relative;
     width: 160px;
     height:200px;
-    margin: 10px;
 }
 
 .card {
@@ -67,6 +80,8 @@ export default {
     height: 100%;
     backface-visibility: hidden;
     border-radius: 10px;
+    border-bottom-left-radius: 0px;
+    border-bottom-right-radius: 0px;
     overflow: auto;
     -webkit-backface-visibility: hidden; 
     background: #ffc728;
@@ -81,6 +96,8 @@ export default {
     height: 100%;
     backface-visibility: hidden;
     border-radius:10px;
+    border-bottom-left-radius: 0px;
+    border-bottom-right-radius: 0px;
     overflow:hidden;
     -webkit-backface-visibility: hidden;
     background: #fafafa;
@@ -92,4 +109,26 @@ export default {
     justify-content: center;
     padding: 75px 5px 50px 5px;
 }
+
+    .flashcard-card-buttons {
+        grid-area: buttons;
+        display:flex;
+        justify-content:center;
+        align-items: center;
+        font-size: 12px;
+        background: var(--negative-color);
+        color: white;
+        border-bottom-left-radius: 15px;
+        border-bottom-right-radius: 15px;
+        cursor:pointer;
+        transition: .4s;
+        opacity: 0.85;
+    }
+
+    .flashcard-card-buttons:hover {
+        outline: 1px solid grey;
+        opacity:1;
+        color: black;
+    }
+
 </style>

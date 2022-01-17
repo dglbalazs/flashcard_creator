@@ -9,7 +9,9 @@
                 @delete-collection="$emit('delete-collection',collection.id)" 
                 :key="collection.id" 
                 v-for="collection in collections" 
-                :collection='collection'>
+                :collection='collection'
+                :flashcards='flashcards'
+                :currentId='collection.id'>
             </Collection_card>
         </div>
     </div>

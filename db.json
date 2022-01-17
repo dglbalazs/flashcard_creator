@@ -31,34 +31,22 @@
       "parentId": "1"
     },
     {
-      "id": "3",
-      "description": "Example description 3",
-      "solution": "Example solution 3",
-      "parentId": "2"
-    },
-    {
-      "id": "4",
-      "description": "Example description 4",
-      "solution": "Example solution 4",
-      "parentId": "2"
-    },
-    {
-      "description": "1233",
-      "solution": "333",
-      "parentId": "2",
-      "id": "46SNWzE"
-    },
-    {
-      "description": "123123",
-      "solution": "1233231",
-      "parentId": "2",
-      "id": "7Q3bxvl"
-    },
-    {
       "description": "123",
       "solution": "222",
       "parentId": "4",
       "id": "r5DZzqr"
+    },
+    {
+      "description": "123",
+      "solution": "123123",
+      "parentId": "3",
+      "id": "SuDSai9"
+    },
+    {
+      "description": "123123",
+      "solution": "21321",
+      "parentId": "4",
+      "id": "bs9Kw_0"
     }
   ]
 }

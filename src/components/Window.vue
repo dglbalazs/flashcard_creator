@@ -4,7 +4,7 @@
             
             @chosen-id="chosen_collection"
             @delete-collection="delete_collection"
-            v-if="this.collection_flashcard=='collection'"
+            v-if="this.collection_flashcard=='collection' && (data1_loaded_up && data2_loaded_up)"
             :collections = 'collections'
             :flashcards = 'flashcards'
         
@@ -16,7 +16,8 @@
             :collection_selected = 'collection_selected'
             :flashcards_name = 'flashcards_name'
             @back-to-collections='back_to_collections'
-            v-if="this.collection_flashcard=='flashcard'"
+            @delete-flashcard = "delete_flashcard"
+            v-if="this.collection_flashcard=='flashcard'  && (data1_loaded_up && data2_loaded_up)"
             
         ></Flashcards>
         
@@ -59,6 +60,14 @@ export default {
             collections: Array,
             flashcards: Array,
             flashcards_name: String,
+            data1_loaded_up: { 
+                type: Boolean,
+                default: false
+            },
+            data2_loaded_up: {
+                type: Boolean,
+                default: false
+            }
         }
     },
     props: {
@@ -68,11 +77,11 @@ export default {
     mounted() {
         this.collection_flashcard = 'collection';
         this.collection_selected = '';
-        alert('created ' + this.trigger_popup + ' , ' + this.collection_flashcard)
+        //alert('created ' + this.trigger_popup + ' , ' + this.collection_flashcard)
     },
     async created() {
-        this.collections = await this.fetchCollections()
-        this.flashcards = await this.fetchFlashcards()
+        this.collections = await this.fetchCollections().then(this.data1_loaded_up==true)
+        this.flashcards = await this.fetchFlashcards().then(this.data2_loaded_up == true)
     },
     methods: {
 
@@ -139,23 +148,38 @@ export default {
 
                 res.status == 200 ?  this.collections = this.collections.filter((collection) => collection.id !== id) : alert('Hiba a törlés közben.')
             }
+            await this.delete_flashcards(id)
         },
 
         async delete_flashcards(parentId) {
             console.log('Deleting flashcards with parentId' + parentId)
             this.flashcards = await this.fetchFlashcards()
 
-            let int_parentId = parentId.parseInt()
-            alert(`api/flashcards?parentId=${int_parentId}`)
-            const res = await fetch(`api/flashcards?parentId=${int_parentId}`, {
-                method: 'DELETE'
-            })
+            const to_delete = this.flashcards.filter((flashcard) => flashcard.parentId == parentId)
 
-            if (res.status != 200) {
-                console.log('Error while deleting flashcards.')
-            }
+            to_delete.forEach(async flashcard => {
+                let id = flashcard.id
+                const res = await fetch(`api/flashcards/${id}`, {
+                    method: 'DELETE'
+                })    
+
+                if (res.status != 200) {
+                    console.log('Error while deleting flashcard with id : ' + id)
+                }
+            });
             
             this.flashcards = await this.fetchFlashcards()
+        },
+
+        async delete_flashcard(id) {
+            if (confirm('Biztos, hogy törölni szeretnéd?')) {
+                console.log('Deleting ' + id)
+                const res = await fetch(`api/flashcards/${id}`, {
+                    method: 'DELETE'
+                })
+
+                res.status == 200 ?  this.flashcards = this.flashcards.filter((flashcard) => flashcard.id !== id) : alert('Hiba a törlés közben.')
+            }
         },
 
         chosen_collection(id) {

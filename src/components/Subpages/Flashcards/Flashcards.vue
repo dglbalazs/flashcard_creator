@@ -9,6 +9,7 @@
                 :key="flashcard.id"
                 v-for="flashcard in filtered_flashcards"
                 :flashcard = "flashcard"
+                @delete-flashcard ='$emit("delete-flashcard",flashcard.id)'
             
             ></Flashcard>
         </div>

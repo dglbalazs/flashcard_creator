@@ -16,10 +16,13 @@
 </template>
 
 <script>
+
 export default {
     name: 'Collection_card',
     props: {
-        collection: Object
+        collection: Object,
+        flashcards: Array,
+        currentId: String
     },
     methods: {
         chosen_collection() {
@@ -29,15 +32,19 @@ export default {
         delete_collection() {
             console.log('deleting : ' + this.collection.id)
             this.$emit('delete-collection',this.collection.id)
-        }
+        },
     },
     data() {
         return {
+            flashcard_collection : [],
             number_of_flashcard : 0
         }
     },
-    mounted(){
-        //this.number_of_flashcard = this.collection.innerCard.length
+    async created() {
+        setTimeout(()=>{
+            this.flashcard_collection = this.flashcards.filter((flashcard) => flashcard.parentId == this.currentId)
+            this.number_of_flashcard = this.flashcard_collection.length ? this.flashcard_collection.length : 0
+        }, 500)
     }
 }
 </script>
