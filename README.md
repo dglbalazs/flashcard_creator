@@ -1,4 +1,4 @@
-# flashcard_beki
+# flashcard
 
 ## Project setup
 ```
